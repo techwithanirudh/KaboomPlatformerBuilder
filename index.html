@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Builder - KaboomJS</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <div id="btnGroup" class="d-grid gap-2"></div>
+
+    <div class="mb-3 mt-5">
+      <p for="code" class="form-label text-center">Code</p>
+      <textarea class="form-control" id="code" rows="6" readonly></textarea>
+    </div>
+
+    <div
+      class="modal fade"
+      id="getLevelCfg"
+      tabindex="-1"
+      aria-labelledby="getLevelCfgLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form
+            id="get-level-cfg"
+            onsubmit="return validateForm(event)"
+            novalidate
+          >
+            <div class="modal-header">
+              <h5 class="modal-title" id="getLevelCfgLabel">Level Config</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="col-auto">
+                <label for="config" class="form-label">Config</label>
+                <textarea
+                  class="form-control form-control-sm"
+                  id="config"
+                  name="config"
+                  placeholder=""
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Please provide valid config.</div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary btn-sm"
+                data-bs-dismiss="modal"
+                onclick="clearForm()"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary btn-sm">
+                Build
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script defer>
+      function validateForm(e) {
+        "use strict";
+        e.preventDefault();
+        const forms = document.getElementById("get-level-cfg");
+        if (!forms.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+          forms.classList.add("was-validated");
+          return false;
+        }
+
+        return submitForm();
+      }
+
+      function submitForm() {
+        const cfgField = document.getElementById("config");
+        const cfgFieldValue = cfgField.value;
+        toBtns(cfgFieldValue);
+        clearForm();
+        return true;
+      }
+
+      function toTitleCase(str) {
+        return str.replace(/\w\S*/g, function (txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+      }
+
+      function toBtns(cfgFieldValue) {
+        cfgFieldValue = cfgFieldValue.replaceAll("'", "");
+        cfgFieldValue = cfgFieldValue.replaceAll('"', "");
+        cfgFieldValue = cfgFieldValue.replaceAll("sprite(", "");
+        cfgFieldValue = cfgFieldValue.replaceAll("solid()", "");
+
+        lines = cfgFieldValue.split("\n");
+
+        for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+          const line = lines[lineIndex + 2];
+          let btnName;
+          if (line) {
+            btnName = line.split("[")[1];
+          }
+          if (btnName) {
+            btnName = btnName.split(")")[0];
+            btnName = btnName.replaceAll("-", " ");
+            btnName = toTitleCase(btnName);
+            let char = line.split(":")[0];
+            char = char.replaceAll(" ", "");
+            let colorList = [
+              "btn-primary",
+              "btn-secondary",
+              "btn-success",
+              "btn-danger",
+              "btn-warning",
+              "btn-info",
+              "btn-light",
+              "btn-dark",
+            ];
+            let btnGroup = document.getElementById("btnGroup");
+            let color = colorList[Math.floor(Math.random() * colorList.length)];
+            let btn = document.createElement("button");
+            btn.className = "btn " + color;
+            btn.type = "button";
+            btn.innerText = btnName;
+            btn.onclick = function () {
+              toCode(char);
+            };
+            btnGroup.appendChild(btn);
+          }
+        }
+      }
+
+      function toCode(char) {
+        console.log(char);
+      }
+
+      function clearForm() {
+        const cfgField = document.getElementById("config");
+        cfgField.value = "";
+        const forms = document.getElementById("get-level-cfg");
+        forms.classList.remove("was-validated");
+      }
+
+      var myModal = new bootstrap.Modal(document.getElementById("getLevelCfg"));
+      myModal.toggle();
+    </script>
+
+    <!-- sprite( & ) & '/" -->
+  </body>
+</html>
