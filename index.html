@@ -80,7 +80,7 @@
         />
       </symbol>
     </svg>
-	<h2 class="text-center font-weight-bolder">Ani Game Builder</h2>
+    <h2 class="text-center font-weight-bolder">Ani Game Builder</h2>
     <div class="container d-flex justify-content-evenly">
       <div id="btnGroup" class="mb-3 mt-5 d-grid gap-2">
         <div class="col-xs-4">
@@ -254,11 +254,20 @@
           let btnName;
           if (line) {
             btnName = line.split("[")[1];
+            if (!btnName) {
+              btnName = lines[lineIndex + 3];
+            }
           }
           if (btnName) {
             btnName = btnName.split(")")[0];
             btnName = btnName.replaceAll("-", " ");
             btnName = toTitleCase(btnName);
+            if (!/^[ a-zA-Z]+$/.test(btnName)) {
+              continue;
+            }
+            if (!btnName.replace(/\s/g, "").length) {
+              continue;
+            }
             let char = line.split(":")[0];
             char = char.replaceAll(" ", "");
             let colorList = [
@@ -313,9 +322,9 @@
 
       readonly.addEventListener("change", (e) => {
         if (e.target.checked) {
-            code.readOnly = true;
+          code.readOnly = true;
         } else {
-            code.readOnly = false;
+          code.readOnly = false;
         }
       });
     </script>
