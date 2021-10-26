@@ -301,7 +301,11 @@
       function toCode(char) {
         var code = document.getElementById("code");
         var codeVal = code.value;
-        char = addNewLines(codeVal + char, "',\n'", col);
+        var orgChar = char;
+        char = addNewLines(codeVal + orgChar, "',\n'", col);
+        if (!codeVal.split("\n")[1]) {
+          char = addNewLines(codeVal + orgChar, "',\n'", parseInt(col) + 1);
+        }
         code.value = char;
       }
 
