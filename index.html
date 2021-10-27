@@ -93,6 +93,11 @@
             New Line
           </button>
         </div>
+        <div class="col-xs-4">
+          <button class="btn btn-primary" type="button" onclick="newLevel()">
+            New Level
+          </button>
+        </div>
       </div>
 
       <div class="mb-3 mt-5">
@@ -317,6 +322,12 @@
           );
         }
         code.value = char;
+      }
+
+      function newLevel() {
+        var codeVal = code.value;
+        codeVal += "],\n['";
+        code.value = codeVal;
       }
 
       function clearForm() {
