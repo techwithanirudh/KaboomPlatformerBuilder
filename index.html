@@ -163,6 +163,8 @@
                     "modalAlertBox"
                   );
                 </script>
+                <label for="column" class="form-label">Column</label>
+                <input class="form-control" id="column" type="number" />
                 <label for="config" class="form-label">Config</label>
                 <textarea
                   class="form-control form-control-sm"
@@ -216,8 +218,8 @@
       </div>
     </div>
 
-    <script defer>
-      var col = prompt("Column: ");
+    <script>
+      var col;
       var colTimes = col;
       var colMul = 2;
 
@@ -249,6 +251,12 @@
       function submitForm() {
         const cfgField = document.getElementById("config");
         const cfgFieldValue = cfgField.value;
+        const colField = document.getElementById("column");
+        let colFieldValue = colField.value;
+        if (colFieldValue <= 0) {
+          colFieldValue = undefined;
+        }
+        window.col = colFieldValue;
         toBtns(cfgFieldValue);
         clearForm();
         return true;
@@ -354,7 +362,9 @@
       const readonly = document.getElementById("readonly");
       const code = document.getElementById("code");
 
-      code.value = localStorage.getItem("levelCode");
+      if (localStorage.getItem("levelCode")) {
+        code.value = localStorage.getItem("levelCode");
+      }
 
       readonly.addEventListener("change", (e) => {
         if (e.target.checked) {
