@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Builder - KaboomJS</title>
+    <title>Level Builder</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -84,8 +84,27 @@
     <div class="container d-flex justify-content-evenly">
       <div id="btnGroup" class="mb-3 mt-5 d-grid gap-2">
         <div class="col-xs-4">
+          <button
+            class="btn btn-primary"
+            type="button"
+            onclick="localStorage.setItem('levelCode', document.getElementById('code').value);"
+          >
+            Save
+          </button>
+        </div>
+        <div class="col-xs-4">
           <button class="btn btn-primary" type="button" onclick="toCode(' ')">
             Space
+          </button>
+        </div>
+        <div class="col-xs-4">
+          <button class="btn btn-primary" type="button" onclick="toCode()">
+            New Line
+          </button>
+        </div>
+        <div class="col-xs-4">
+          <button class="btn btn-primary" type="button" onclick="newLevel()">
+            New Level
           </button>
         </div>
       </div>
@@ -102,7 +121,7 @@
         </div>
         <p for="code" class="form-label text-center">Code</p>
         <textarea class="form-control" id="code" rows="30" cols="100" readonly>
-'</textarea
+["</textarea
         >
       </div>
     </div>
@@ -144,6 +163,8 @@
                     "modalAlertBox"
                   );
                 </script>
+                <label for="column" class="form-label">Column</label>
+                <input class="form-control" id="column" type="number" />
                 <label for="config" class="form-label">Config</label>
                 <textarea
                   class="form-control form-control-sm"
@@ -197,8 +218,8 @@
       </div>
     </div>
 
-    <script defer>
-      var col = prompt("Column: ");
+    <script>
+      var col;
       var colTimes = col;
       var colMul = 2;
 
@@ -230,6 +251,12 @@
       function submitForm() {
         const cfgField = document.getElementById("config");
         const cfgFieldValue = cfgField.value;
+        const colField = document.getElementById("column");
+        let colFieldValue = colField.value;
+        if (colFieldValue <= 0) {
+          colFieldValue = undefined;
+        }
+        window.col = colFieldValue;
         toBtns(cfgFieldValue);
         clearForm();
         return true;
@@ -254,20 +281,11 @@
           let btnName;
           if (line) {
             btnName = line.split("[")[1];
-            if (!btnName) {
-              btnName = lines[lineIndex + 3];
-            }
           }
           if (btnName) {
             btnName = btnName.split(")")[0];
             btnName = btnName.replaceAll("-", " ");
             btnName = toTitleCase(btnName);
-            if (!/^[ a-zA-Z]+$/.test(btnName)) {
-              continue;
-            }
-            if (!btnName.replace(/\s/g, "").length) {
-              continue;
-            }
             let char = line.split(":")[0];
             char = char.replaceAll(" ", "");
             let colorList = [
@@ -298,15 +316,35 @@
         }
       }
 
-      function toCode(char) {
+      function toCode(char = '",\n"', extraChar = 2) {
         var code = document.getElementById("code");
         var codeVal = code.value;
         var orgChar = char;
-        char = addNewLines(codeVal + orgChar, "',\n'", col);
+        char = addNewLines(codeVal + char, '",\n"', col);
         if (!codeVal.split("\n")[1]) {
-          char = addNewLines(codeVal + orgChar, "',\n'", parseInt(col) + 1);
+          char = addNewLines(
+            codeVal + orgChar,
+            '",\n"',
+            parseInt(col) + extraChar
+          );
+        }
+        if (
+          codeVal.split("[").at(-1) &&
+          !codeVal.split("[").at(-1).split("\n")[1]
+        ) {
+          char = addNewLines(
+            codeVal + orgChar,
+            '",\n"',
+            parseInt(col) + extraChar
+          );
         }
         code.value = char;
+      }
+
+      function newLevel() {
+        var codeVal = code.value;
+        codeVal += '],\n["';
+        code.value = codeVal;
       }
 
       function clearForm() {
@@ -324,6 +362,10 @@
       const readonly = document.getElementById("readonly");
       const code = document.getElementById("code");
 
+      if (localStorage.getItem("levelCode")) {
+        code.value = localStorage.getItem("levelCode");
+      }
+
       readonly.addEventListener("change", (e) => {
         if (e.target.checked) {
           code.readOnly = true;
@@ -331,8 +373,21 @@
           code.readOnly = false;
         }
       });
-    </script>
 
-    <!-- sprite( & ) & '/" -->
+      //   var levelCode = localStorage.getItem("levelCode");
+      //   var loopCount = 0;
+      //   levelCode = levelCode.replaceAll("\n", "");
+      //   lists = levelCode.split("],");
+      //   var maps = [];
+
+      //   lists.forEach((list) => {
+      //     loopCount += 1;
+      //     if (levelCode.split("],")[loopCount]) {
+      //       list += "]";
+      //     }
+      //     var obj = JSON.parse(list);
+      //     maps.push(obj);
+      //   });
+    </script>
   </body>
 </html>
