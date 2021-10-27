@@ -84,6 +84,15 @@
     <div class="container d-flex justify-content-evenly">
       <div id="btnGroup" class="mb-3 mt-5 d-grid gap-2">
         <div class="col-xs-4">
+          <button
+            class="btn btn-primary"
+            type="button"
+            onclick="localStorage.setItem('levelCode', document.getElementById('code').value);"
+          >
+            Save
+          </button>
+        </div>
+        <div class="col-xs-4">
           <button class="btn btn-primary" type="button" onclick="toCode(' ')">
             Space
           </button>
@@ -112,7 +121,7 @@
         </div>
         <p for="code" class="form-label text-center">Code</p>
         <textarea class="form-control" id="code" rows="30" cols="100" readonly>
-['</textarea
+["</textarea
         >
       </div>
     </div>
@@ -299,15 +308,15 @@
         }
       }
 
-      function toCode(char = "',\n'", extraChar = 2) {
+      function toCode(char = '",\n"', extraChar = 2) {
         var code = document.getElementById("code");
         var codeVal = code.value;
         var orgChar = char;
-        char = addNewLines(codeVal + char, "',\n'", col);
+        char = addNewLines(codeVal + char, '",\n"', col);
         if (!codeVal.split("\n")[1]) {
           char = addNewLines(
             codeVal + orgChar,
-            "',\n'",
+            '",\n"',
             parseInt(col) + extraChar
           );
         }
@@ -317,7 +326,7 @@
         ) {
           char = addNewLines(
             codeVal + orgChar,
-            "',\n'",
+            '",\n"',
             parseInt(col) + extraChar
           );
         }
@@ -326,7 +335,7 @@
 
       function newLevel() {
         var codeVal = code.value;
-        codeVal += "],\n['";
+        codeVal += '],\n["';
         code.value = codeVal;
       }
 
@@ -345,6 +354,8 @@
       const readonly = document.getElementById("readonly");
       const code = document.getElementById("code");
 
+      code.value = localStorage.getItem("levelCode");
+
       readonly.addEventListener("change", (e) => {
         if (e.target.checked) {
           code.readOnly = true;
@@ -352,8 +363,21 @@
           code.readOnly = false;
         }
       });
-    </script>
 
-    <!-- sprite( & ) & '/" -->
+      //   var levelCode = localStorage.getItem("levelCode");
+      //   var loopCount = 0;
+      //   levelCode = levelCode.replaceAll("\n", "");
+      //   lists = levelCode.split("],");
+      //   var maps = [];
+
+      //   lists.forEach((list) => {
+      //     loopCount += 1;
+      //     if (levelCode.split("],")[loopCount]) {
+      //       list += "]";
+      //     }
+      //     var obj = JSON.parse(list);
+      //     maps.push(obj);
+      //   });
+    </script>
   </body>
 </html>
